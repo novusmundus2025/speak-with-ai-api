@@ -12,7 +12,7 @@ copy .env.example .env.local
 npm run dev
 ```
 
-The default configuration uses mock replies, so no API key or AI usage is required. The server starts at `http://127.0.0.1:8787`.
+The default configuration uses mock replies. The server starts at `http://127.0.0.1:8787`.
 
 ```bash
 curl http://127.0.0.1:8787/health
@@ -27,12 +27,11 @@ Set these values in `.env.local`:
 
 ```dotenv
 USE_MOCK_MUNDUSX=false
-MUNDUSX_BASE_URL=https://mundusx.ai/v1
-MUNDUSX_API_KEY=your-server-only-key
-MUNDUSX_MODEL=your-model-name
+MUNDUSX_BASE_URL=https://mundusx.ai
+MUNDUSX_API_MODE=jobs
 ```
 
-The service calls the OpenAI-compatible `POST /chat/completions` endpoint. Never expose `MUNDUSX_API_KEY` in the Vite client or use a `VITE_` prefix for it.
+Jobs mode submits to `POST /v1/jobs` and polls `GET /v1/jobs/{request_id}` until completion. The optional `chat` mode calls `POST /v1/chat/completions`. Neither credentials nor a model are required. `MUNDUSX_API_KEY` and `MUNDUSX_MODEL` remain optional settings for future compatibility. Never expose an API key in the Vite client or use a `VITE_` prefix for it.
 
 ## API
 

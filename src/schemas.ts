@@ -23,6 +23,16 @@ export const conversationRequestSchema = z.object({
     )
     .max(6)
     .default([]),
+  priorTurns: z
+    .array(
+      z.object({
+        speaker: z.enum(["other", "user"]),
+        text: z.string().trim().min(1).max(1_000),
+      }),
+    )
+    .max(6)
+    .optional(),
+  replyCount: z.literal(3).optional(),
 });
 
 export const replySchema = z.object({
@@ -49,5 +59,20 @@ export const conversationResponseSchema = z.object({
   }),
 });
 
+export const glassesConversationResponseSchema = z.object({
+  detectedLanguage: z.string().trim().min(2).max(35),
+  speechAct: speechActSchema,
+  heard: z.string().trim().min(1).max(4_000),
+  translation: z.string().trim().min(1).max(500),
+  topic: z.string().trim().min(1).max(120),
+  context: z.string().trim().min(1).max(500),
+  replies: z.tuple([
+    z.object({ ...replySchema.shape, kind: z.literal("supportive") }),
+    z.object({ ...replySchema.shape, kind: z.literal("continuation") }),
+    z.object({ ...replySchema.shape, kind: z.literal("alternative") }),
+  ]),
+});
+
 export type ConversationRequest = z.infer<typeof conversationRequestSchema>;
 export type ConversationResponse = z.infer<typeof conversationResponseSchema>;
+export type GlassesConversationResponse = z.infer<typeof glassesConversationResponseSchema>;

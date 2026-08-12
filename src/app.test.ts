@@ -8,10 +8,12 @@ const config: AppConfig = {
   host: "127.0.0.1",
   allowedOrigins: ["http://localhost:5173"],
   useMockMundusx: true,
-  mundusxBaseUrl: "https://mundusx.ai/v1",
+  mundusxBaseUrl: "https://mundusx.ai",
+  mundusxApiMode: "jobs",
   mundusxApiKey: "",
   mundusxModel: "",
   mundusxTimeoutMs: 15_000,
+  mundusxPollIntervalMs: 1_000,
 };
 
 describe("API", () => {
@@ -43,8 +45,37 @@ describe("API", () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().speechAct).toBe("information");
+    expect(response.json()).toMatchObject({
+      detectedLanguage: "de",
+      speechAct: "information",
+      heard: "Das Wetter ist heute schön.",
+      translation: "The weather is pleasant.",
+      topic: "Weather",
+      replies: [
+        { kind: "supportive" },
+        { kind: "continuation" },
+        { kind: "alternative" },
+      ],
+    });
     expect(analyze).toHaveBeenCalledOnce();
+    await app.close();
+  });
+
+  it("accepts the client priorTurns field and exposes credentialed CORS", async () => {
+    const app = await buildApp({ config });
+    const preflight = await app.inject({
+      method: "OPTIONS",
+      url: "/api/glasses/conversation",
+      headers: {
+        origin: "http://localhost:5173",
+        "access-control-request-method": "POST",
+        "access-control-request-headers": "content-type",
+      },
+    });
+
+    expect(preflight.statusCode).toBe(204);
+    expect(preflight.headers["access-control-allow-origin"]).toBe("http://localhost:5173");
+    expect(preflight.headers["access-control-allow-credentials"]).toBe("true");
     await app.close();
   });
 

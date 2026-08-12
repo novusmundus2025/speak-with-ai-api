@@ -22,6 +22,7 @@ export async function buildApp({ config, analyzer }: BuildAppOptions) {
       callback(new Error("Origin is not allowed"), false);
     },
     methods: ["GET", "POST", "OPTIONS"],
+    credentials: true,
   });
 
   app.get("/health", async () => ({
@@ -39,7 +40,28 @@ export async function buildApp({ config, analyzer }: BuildAppOptions) {
     }
 
     try {
-      return await conversationAnalyzer.analyze(parsed.data);
+      const analysis = await conversationAnalyzer.analyze({
+        ...parsed.data,
+        recentTurns: parsed.data.priorTurns ?? parsed.data.recentTurns,
+      });
+      const repliesByKind = new Map(analysis.replies.map((suggestion) => [suggestion.kind, suggestion]));
+      const supportive = repliesByKind.get("supportive")!;
+      const continuation = repliesByKind.get("continue")!;
+      const alternative = repliesByKind.get("alternative")!;
+
+      return {
+        detectedLanguage: parsed.data.conversationLanguage,
+        speechAct: analysis.speechAct,
+        heard: parsed.data.transcript,
+        translation: analysis.meaning,
+        topic: analysis.topic,
+        context: analysis.meaning,
+        replies: [
+          { ...supportive, kind: "supportive" },
+          { ...continuation, kind: "continuation" },
+          { ...alternative, kind: "alternative" },
+        ],
+      };
     } catch (error) {
       request.log.error({ error }, "Conversation analysis failed");
       return reply.code(502).send({
