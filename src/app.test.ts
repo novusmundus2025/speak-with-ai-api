@@ -9,7 +9,7 @@ const config: AppConfig = {
   allowedOrigins: ["http://localhost:5173"],
   useMockMundusx: true,
   mundusxBaseUrl: "https://mundusx.ai",
-  mundusxApiMode: "jobs",
+  mundusxApiMode: "speakai",
   mundusxApiKey: "",
   mundusxModel: "",
   mundusxTimeoutMs: 15_000,
