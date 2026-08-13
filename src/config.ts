@@ -14,7 +14,7 @@ const environmentSchema = z.object({
   ALLOWED_ORIGINS: z.string().default("http://localhost:5173,http://127.0.0.1:5173"),
   USE_MOCK_MUNDUSX: booleanFromString,
   MUNDUSX_BASE_URL: z.string().url().default("https://mundusx.ai"),
-  MUNDUSX_API_MODE: z.enum(["jobs", "chat"]).default("jobs"),
+  MUNDUSX_API_MODE: z.enum(["speakai", "jobs", "chat"]).default("speakai"),
   MUNDUSX_API_KEY: z.string().default(""),
   MUNDUSX_MODEL: z.string().default(""),
   MUNDUSX_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(120_000).default(15_000),
@@ -27,7 +27,7 @@ export interface AppConfig {
   allowedOrigins: string[];
   useMockMundusx: boolean;
   mundusxBaseUrl: string;
-  mundusxApiMode: "jobs" | "chat";
+  mundusxApiMode: "speakai" | "jobs" | "chat";
   mundusxApiKey: string;
   mundusxModel: string;
   mundusxTimeoutMs: number;

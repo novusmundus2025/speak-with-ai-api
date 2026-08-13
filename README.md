@@ -28,10 +28,10 @@ Set these values in `.env.local`:
 ```dotenv
 USE_MOCK_MUNDUSX=false
 MUNDUSX_BASE_URL=https://mundusx.ai
-MUNDUSX_API_MODE=jobs
+MUNDUSX_API_MODE=speakai
 ```
 
-Jobs mode submits to `POST /v1/jobs` and polls `GET /v1/jobs/{request_id}` until completion. The optional `chat` mode calls `POST /v1/chat/completions`. Neither credentials nor a model are required. `MUNDUSX_API_KEY` and `MUNDUSX_MODEL` remain optional settings for future compatibility. Never expose an API key in the Vite client or use a `VITE_` prefix for it.
+SpeakAI mode submits validated conversation requests to `POST /v1/chat/completions` with `mode: "speakai"`, then polls `GET /v1/jobs/{request_id}`. Generic `jobs` and `chat` modes remain available for compatibility. Neither credentials nor a model are required. `MUNDUSX_API_KEY` and `MUNDUSX_MODEL` remain optional settings for future compatibility. Never expose an API key in the Vite client or use a `VITE_` prefix for it.
 
 ## API
 
