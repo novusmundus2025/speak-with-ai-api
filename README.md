@@ -49,3 +49,7 @@ Request:
 ```
 
 The response identifies the speech act, topic, and meaning, then supplies exactly three German replies: supportive, conversational continuation, and an alternative perspective. Each reply also includes an English meaning and a short purpose label for the HUD.
+
+## License
+
+Project-owned source code and documentation are licensed under [Apache License 2.0](LICENSE). Third-party components, data, and assets retain their own licenses and notices.
